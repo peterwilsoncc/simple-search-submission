@@ -104,7 +104,7 @@ function get_indexnow_key(): string {
 	if ( ! $key ) {
 		// Generate a random key that meets IndexNow requirements.
 		// Must be 8-128 hexadecimal characters (a-f, 0-9).
-		$key = strtolower( wp_generate_password( 128, false, false ) );
+		$key = strtolower( wp_generate_password( 32, false, false ) );
 
 		update_option( 'pwcc_indexnow_key', $key );
 
