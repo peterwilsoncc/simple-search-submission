@@ -38,9 +38,14 @@ function bootstrap() {
 	 */
 	$notify_async = apply_filters( 'pwcc/index-now/notify-async', false );
 
-	add_action( 'pwcc/index-now/ping', __NAMESPACE__ . '\\async_ping_indexnow', 10, 1 );
-	// For sites doing synchronous pings this would use the hook above instead.
-	add_action( 'pwcc/index-now/async_ping', __NAMESPACE__ . '\\ping_indexnow', 10, 1 );
+	if ( $notify_async ) {
+		// Use the async ping action.
+		add_action( 'pwcc/index-now/ping', __NAMESPACE__ . '\\async_ping_indexnow', 10, 1 );
+		add_action( 'pwcc/index-now/async_ping', __NAMESPACE__ . '\\ping_indexnow', 10, 1 );
+	} else {
+		// Use the synchronous ping action.
+		add_action( 'pwcc/index-now/ping', __NAMESPACE__ . '\\ping_indexnow', 10, 1 );
+	}
 }
 
 /**
