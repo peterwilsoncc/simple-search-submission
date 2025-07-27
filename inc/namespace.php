@@ -1,11 +1,11 @@
 <?php
 /**
- * WP Plugin Template
+ * No Fuss IndexNow
  *
- * @package           WpPluginTemplate
+ * @package           NoFussIndexNow
  */
 
-namespace PWCC\WpPluginTemplate;
+namespace PWCC\NoFussIndexNow;
 
 const PLUGIN_VERSION = '1.0.0';
 

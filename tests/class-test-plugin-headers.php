@@ -2,10 +2,10 @@
 /**
  * Test Plugin Readme and PHP Headers
  *
- * @package WpPluginTemplate
+ * @package NoFussIndexNow
  */
 
-namespace PWCC\WpPluginTemplate\Tests;
+namespace PWCC\NoFussIndexNow\Tests;
 
 use WP_UnitTestCase;
 

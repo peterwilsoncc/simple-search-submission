@@ -2,14 +2,14 @@
 /**
  * Test Plugin Versions match.
  *
- * @package WpPluginTemplate
+ * @package NoFussIndexNow
  */
 
-namespace PWCC\WpPluginTemplate\Tests;
+namespace PWCC\NoFussIndexNow\Tests;
 
 use WP_UnitTestCase;
 
-use const PWCC\WpPluginTemplate\PLUGIN_VERSION;
+use const PWCC\NoFussIndexNow\PLUGIN_VERSION;
 
 /**
  * Test Plugin Readme and PHP Headers
