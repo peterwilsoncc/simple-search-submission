@@ -132,6 +132,33 @@ function get_indexnow_key(): string {
  * @param WP_Post $post       Post object.
  */
 function maybe_ping_indexnow( $new_status, $old_status, $post ): void {
+	/**
+	 * Filter to preflight the IndexNow ping.
+	 *
+	 * This allow for developers to provide custom logic to determine whether
+	 * to ping IndexNow. Return `true` to ping, `false` to skip, or
+	 * `null` to use the default logic.
+	 *
+	 * @param bool|null $preflight_ping The preflight ping decision.
+	 *                                  Default is `null`, meaning use the default logic.
+	 * @param string    $new_status     The new post status.
+	 * @param string    $old_status     The old post status.
+	 * @param WP_Post   $post           The post object.
+	 */
+	$preflight_ping = apply_filters( 'pwcc/index-now/pre-maybe-ping-indexnow', null, $new_status, $old_status, $post );
+
+	if ( is_bool( $preflight_ping ) ) {
+		if ( true === $preflight_ping ) {
+			/**
+			 * Fire the action to ping IndexNow.
+			 *
+			 * @param WP_Post $post The post object.
+			 */
+			do_action( 'pwcc/index-now/ping', $post );
+		}
+		return;
+	}
+
 	// Do not ping during an import.
 	if ( defined( 'WP_IMPORTING' ) && WP_IMPORTING ) {
 		return;
@@ -175,11 +202,7 @@ function maybe_ping_indexnow( $new_status, $old_status, $post ): void {
 		return;
 	}
 
-	/**
-	 * Fire the action to ping IndexNow.
-	 *
-	 * @param WP_Post|int $post The post ID or object.
-	 */
+	/** This action is documented in inc/namespace.php */
 	do_action( 'pwcc/index-now/ping', $post );
 }
 
