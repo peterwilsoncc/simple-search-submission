@@ -11,6 +11,8 @@ const PLUGIN_VERSION = '1.0.0';
 
 /**
  * Bootstrap the plugin.
+ *
+ * Runs on the `after_setup_theme, 20` action.
  */
 function bootstrap() {
 	add_filter( 'query_vars', __NAMESPACE__ . '\\register_query_vars' );

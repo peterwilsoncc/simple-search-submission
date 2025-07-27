@@ -40,4 +40,4 @@ namespace PWCC\NoFussIndexNow;
 
 require_once __DIR__ . '/inc/namespace.php';
 
-bootstrap();
+add_action( 'after_setup_theme', __NAMESPACE__ . '\\bootstrap', 20 );
