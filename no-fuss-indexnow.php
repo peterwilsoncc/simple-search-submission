@@ -18,7 +18,8 @@
  * License: GPL-2.0-or-later
  * Text Domain: no-fuss-indexnow
  *
- *
+ * This plugin is based on the IndexNow code from the FAIR plugin, copyright
+ * 2025 FAIR contributors, and licensed under the GNU General Public License.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
