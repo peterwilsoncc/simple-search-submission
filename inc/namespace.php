@@ -231,6 +231,12 @@ function ping_indexnow( $post ) {
 	 */
 	$url_list = apply_filters( 'pwcc/index-now/url-list', array( $url ) );
 
+	if ( empty( get_option( 'permalink_structure' ) ) ) {
+		$key_location = home_url( '?pwcc_indexnow_key=' . $key );
+	} else {
+		$key_location = trailingslashit( home_url( 'pwcc-indexnow-' . $key ) );
+	}
+
 	/**
 	 * Filters the location of the IndexNow key file.
 	 *
@@ -238,7 +244,7 @@ function ping_indexnow( $post ) {
 	 * @param array   $url_list     The list if URLs to be submitted.
 	 * @param WP_Post $post         The post object.
 	 */
-	$key_location = apply_filters( 'pwcc/index-now/key-location', trailingslashit( home_url( 'pwcc-indexnow-' . $key ) ), $url_list, $post );
+	$key_location = apply_filters( 'pwcc/index-now/key-location', $key_location, $url_list, $post );
 
 	$data    = array(
 		'host'        => wp_parse_url( $key_location, PHP_URL_HOST ),
