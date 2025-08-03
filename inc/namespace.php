@@ -207,6 +207,63 @@ function maybe_ping_indexnow( $new_status, $old_status, $post ): void {
 }
 
 /**
+ * Get a list of URLs to ping IndexNow with.
+ *
+ * This includes the previously pinged URLs from the post meta
+ * as they may have become unavailable, redirects or otherwise
+ * changed.
+ *
+ * @param \WP_Post|int $post The post ID or object.
+ * @return array List of URLs to ping IndexNow with.
+ */
+function get_post_ping_urls( $post ) {
+	$post = get_post( $post );
+	if ( ! $post ) {
+		return array();
+	}
+
+	// Get previous pings from the post meta.
+	$ping_urls = get_post_meta( $post->ID, '_pwcc_indexnow_urls', true );
+	if ( empty( $ping_urls ) || ! is_array( $ping_urls ) ) {
+		// Initialize an empty array if no URLs are found.
+		$ping_urls = array();
+	}
+
+	return $ping_urls;
+}
+
+/**
+ * Add a URL or URLs to the post's ping URLs.
+ *
+ * This function allows you to add additional URLs to the list of URLs
+ * that will be pinged to IndexNow when the post is updated.
+ *
+ * @param \WP_Post|int    $post The post ID or object.
+ * @param string|string[] $urls The URL or URLs to add. Can be a single URL as a string
+ *                              or an array of URLs.
+ */
+function add_post_ping_urls( $post, $urls ) {
+	$post = get_post( $post );
+	if ( ! $post ) {
+		return;
+	}
+
+	$ping_urls     = get_post_ping_urls( $post );
+	$old_ping_urls = $ping_urls;
+	$urls          = (array) $urls;
+	$ping_urls     = array_merge( $ping_urls, $urls );
+	$ping_urls     = array_unique( $ping_urls );
+	sort( $ping_urls );
+
+	// If the URLs haven't changed, do nothing.
+	if ( empty( array_diff( $ping_urls, $old_ping_urls ) ) ) {
+		return;
+	}
+
+	update_post_meta( $post->ID, '_pwcc_indexnow_urls', $ping_urls );
+}
+
+/**
  * Ping IndexNow with the post URL.
  *
  * @param \WP_Post|int $post The post ID or object.
@@ -218,9 +275,20 @@ function ping_indexnow( $post ) {
 		return;
 	}
 
-	$url = get_permalink( $post );
-	if ( ! $url ) {
-		return;
+	$url_list    = get_post_ping_urls( $post );
+	$current_url = get_permalink( $post );
+
+	/*
+	 * Only add the current URL if it is publicly viewable.
+	 *
+	 * This prevents unnecessary pings for private or draft posts in
+	 * which the current URL will 404. If the URL has been previously
+	 * pinged, it will be included in the list of URLs to ping as IndexNow
+	 * allows for new 404s to be pinged to encourage search engines
+	 * to remove the URL from their index.
+	 */
+	if ( is_post_publicly_viewable( $post ) && ! in_array( $current_url, $url_list, true ) ) {
+		$url_list[] = get_permalink( $post );
 	}
 
 	/**
@@ -228,8 +296,9 @@ function ping_indexnow( $post ) {
 	 *
 	 * @param array $url_list Array of URLs to submit.
 	 *                        Default is an array with the single URL of the post.
+	 * @param \WP_Post $post The post object.
 	 */
-	$url_list = apply_filters( 'pwcc/index-now/url-list', array( $url ) );
+	$url_list = apply_filters( 'pwcc/index-now/url-list', $url_list, $post );
 
 	if ( empty( get_option( 'permalink_structure' ) ) ) {
 		$key_location = home_url( '?pwcc_indexnow_key=' . $key );
@@ -263,6 +332,7 @@ function ping_indexnow( $post ) {
 		// In development, log the request for debugging.
 		// phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log, WordPress.PHP.DevelopmentFunctions.error_log_print_r
 		error_log( 'IndexNow ping request: ' . print_r( $request, true ) );
+		add_post_ping_urls( $post, $url_list );
 
 		// Do not send the request in development.
 		return;
@@ -286,6 +356,8 @@ function ping_indexnow( $post ) {
 		// phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log, WordPress.PHP.DevelopmentFunctions.error_log_print_r
 		error_log( 'IndexNow ping failed: ' . $status . print_r( $request, true ) );
 	}
+
+	add_post_ping_urls( $post, $url_list );
 }
 
 /**
