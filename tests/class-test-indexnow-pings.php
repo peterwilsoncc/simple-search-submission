@@ -171,6 +171,23 @@ class Test_IndexNow_Pings extends WP_UnitTestCase {
 	}
 
 	/**
+	 * Ensure unpublishing a post pings the old URL.
+	 */
+	public function test_ping_on_unpublishing() {
+		$post_id = self::$post_ids['publish'];
+
+		wp_update_post(
+			array(
+				'ID'          => $post_id,
+				'post_status' => 'draft',
+			)
+		);
+
+		$this->assertPing( home_url( '/2025/test-post-publish/' ), 'Ping should include the post URL on unpublishing.' );
+		$this->assertNotPing( home_url( "/?p={$post_id}" ), 'Ping should not include the unpublished post URL.' );
+	}
+
+	/**
 	 * Ensure publishing a draft post pings the URL.
 	 */
 	public function test_ping_on_draft_publish() {
