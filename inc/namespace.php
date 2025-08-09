@@ -300,6 +300,11 @@ function ping_indexnow( $post ) {
 	 */
 	$url_list = apply_filters( 'pwcc/index-now/url-list', $url_list, $post );
 
+	if ( empty( $url_list ) ) {
+		// If no URLs to ping, do nothing.
+		return;
+	}
+
 	if ( empty( get_option( 'permalink_structure' ) ) ) {
 		$key_location = home_url( '?pwcc_indexnow_key=' . $key );
 	} else {
