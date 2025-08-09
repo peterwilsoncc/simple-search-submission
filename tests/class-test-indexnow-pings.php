@@ -45,7 +45,7 @@ class Test_IndexNow_Pings extends WP_UnitTestCase {
 		global $wp_rewrite;
 
 		$wp_rewrite->init();
-		$wp_rewrite->set_permalink_structure( '/%year%/%monthnum%/%day%/%postname%/' );
+		$wp_rewrite->set_permalink_structure( '/%year%/%postname%/' );
 		$wp_rewrite->flush_rules();
 
 		$statuses = array( 'publish', 'draft', 'pending', 'private' );
@@ -54,6 +54,8 @@ class Test_IndexNow_Pings extends WP_UnitTestCase {
 				array(
 					'post_status' => $status,
 					'post_title'  => 'Test Post ' . ucfirst( $status ),
+					'post_name'   => 'test-post-' . $status,
+					'post_date'   => '2025-06-01 12:00:00', // Set date for predictable URLs.
 				)
 			);
 			self::$post_ids[ $status ] = $post_id;
@@ -65,7 +67,7 @@ class Test_IndexNow_Pings extends WP_UnitTestCase {
 	 */
 	public function set_up() {
 		parent::set_up();
-		$this->set_permalink_structure( '/%year%/%monthnum%/%day%/%postname%/' );
+		$this->set_permalink_structure( '/%year%/%postname%/' );
 		$this->pings = array();
 		add_filter( 'pre_http_request', array( $this, 'mocked_ping_response' ), 10, 3 );
 	}
@@ -132,10 +134,12 @@ class Test_IndexNow_Pings extends WP_UnitTestCase {
 			array(
 				'post_status' => 'publish',
 				'post_title'  => 'Test Post',
+				'post_name'   => 'ping-on-post-publish',
+				'post_date'   => '2025-06-01 12:00:00', // Set date for predictable URLs.
 			)
 		);
 
-		$this->assertPing( get_permalink( $post_id ), 'Ping should include the post URL on publish.' );
+		$this->assertPing( home_url( '/2025/ping-on-post-publish/' ), 'Ping should include the post URL on publish.' );
 	}
 
 	/**
@@ -151,7 +155,7 @@ class Test_IndexNow_Pings extends WP_UnitTestCase {
 			)
 		);
 
-		$this->assertPing( get_permalink( $post_id ), 'Ping should include the post URL on update.' );
+		$this->assertPing( home_url( '/2025/test-post-publish/' ), 'Ping should include the post URL on update.' );
 	}
 
 	/**
@@ -159,12 +163,10 @@ class Test_IndexNow_Pings extends WP_UnitTestCase {
 	 */
 	public function test_ping_on_post_trash() {
 		$post_id            = self::$post_ids['publish'];
-		$original_permalink = get_permalink( $post_id );
 
 		wp_trash_post( $post_id );
-		$trashed_permalink = get_permalink( $post_id );
 
-		$this->assertPing( $original_permalink, 'Ping should include the post URL on trash.' );
-		$this->assertNotPing( $trashed_permalink, 'Ping should not include the trashed post URL.' );
+		$this->assertPing( home_url( '/2025/test-post-publish/' ), 'Ping should include the post URL on trash.' );
+		$this->assertNotPing( home_url( "/?p={$post_id}" ), 'Ping should not include the trashed post URL.' );
 	}
 }
