@@ -130,7 +130,7 @@ class Test_IndexNow_Pings extends WP_UnitTestCase {
 	 * Ensure a new post triggers a ping to IndexNow.
 	 */
 	public function test_ping_on_post_publish() {
-		$post_id = $this->factory->post->create(
+		$this->factory->post->create(
 			array(
 				'post_status' => 'publish',
 				'post_title'  => 'Test Post',
@@ -162,11 +162,22 @@ class Test_IndexNow_Pings extends WP_UnitTestCase {
 	 * Ensure trashing a previously published post pings the old URL.
 	 */
 	public function test_ping_on_post_trash() {
-		$post_id            = self::$post_ids['publish'];
+		$post_id = self::$post_ids['publish'];
 
 		wp_trash_post( $post_id );
 
 		$this->assertPing( home_url( '/2025/test-post-publish/' ), 'Ping should include the post URL on trash.' );
 		$this->assertNotPing( home_url( "/?p={$post_id}" ), 'Ping should not include the trashed post URL.' );
+	}
+
+	/**
+	 * Ensure publishing a draft post pings the URL.
+	 */
+	public function test_ping_on_draft_publish() {
+		$post_id = self::$post_ids['draft'];
+
+		wp_publish_post( $post_id );
+
+		$this->assertPing( home_url( '/2025/test-post-draft/' ), 'Ping should include the post URL on draft publish.' );
 	}
 }
