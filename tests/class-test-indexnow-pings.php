@@ -197,4 +197,49 @@ class Test_IndexNow_Pings extends WP_UnitTestCase {
 
 		$this->assertPing( home_url( '/2025/test-post-draft/' ), 'Ping should include the post URL on draft publish.' );
 	}
+
+	/**
+	 * Ensure a private CPT does not ping.
+	 */
+	public function test_no_ping_on_private_cpt() {
+		register_post_type(
+			'private_cpt',
+			array(
+				'public'   => false,
+				'supports' => array( 'title', 'editor' ),
+			)
+		);
+		$post_id = $this->factory->post->create(
+			array(
+				'post_type'   => 'private_cpt',
+				'post_status' => 'publish',
+			)
+		);
+
+		unregister_post_type( 'private_cpt' );
+		$this->assertNotPing( get_permalink( $post_id ), 'Private CPT should not ping.' );
+	}
+
+	/**
+	 * Ensure a custom private post status does not ping.
+	 */
+	public function test_no_ping_on_custom_private_post_status() {
+		global $wp_post_statuses;
+		register_post_status(
+			'custom_private',
+			array(
+				'public' => false,
+			)
+		);
+		$post_id = $this->factory->post->create(
+			array(
+				'post_type'   => 'post',
+				'post_status' => 'custom_private',
+			)
+		);
+
+		// unregister_post_status doesn't exist.
+		unset( $wp_post_statuses['custom_private'] );
+		$this->assertNotPing( get_permalink( $post_id ), 'Custom private post status should not ping.' );
+	}
 }
