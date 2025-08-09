@@ -333,7 +333,25 @@ function ping_indexnow( $post ) {
 		),
 	);
 
-	if ( wp_get_environment_type() !== 'production' ) {
+	if (
+		wp_get_environment_type() !== 'production'
+		/**
+		 * Filter whether to bypass pings in non-production environments.
+		 *
+		 * By default, only production environments (determined by the return value
+		 * of `wp_get_environment_type()`) will ping IndexNow. Other environments
+		 * will log the request to indicate the URLs that would have been pinged.
+		 *
+		 * Returning false on this filter will result in the request being sent
+		 * to IndexNow on non-production values.
+		 *
+		 * @param bool     $bypass   Whether to bypass pings on non-production environments.
+		 *                           Default is true.
+		 * @param \WP_Post $post     The post object
+		 * @param string[] $url_list The list of URLs to be pinged
+		 */
+		&& apply_filters( 'pwcc/index-now/bypass-non-production-environment', true, $post, $url_list )
+	) {
 		// In development, log the request for debugging.
 		// phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log, WordPress.PHP.DevelopmentFunctions.error_log_print_r
 		error_log( 'IndexNow ping request: ' . print_r( $request, true ) );
