@@ -2,10 +2,10 @@
 /**
  * Test Plugin Readme and PHP Headers
  *
- * @package NoFussIndexNow
+ * @package SimpleSearchSubmission
  */
 
-namespace PWCC\NoFussIndexNow\Tests;
+namespace PWCC\SimpleSearchSubmission\Tests;
 
 use WP_UnitTestCase;
 
@@ -125,11 +125,7 @@ class Test_Plugin_Headers extends WP_UnitTestCase {
 
 		// Get the plugin headers.
 		// Plugin name.
-		$plugin_file_name = basename( dirname( __DIR__ ) ) . '.php';
-		if ( ! file_exists( __DIR__ . "/../{$plugin_file_name}" ) ) {
-			// Fallback to the generic plugin file name.
-			$plugin_file_name = 'plugin.php';
-		}
+		$plugin_file_name = 'simple-search-submission.php';
 
 		$plugin_file_data = array();
 		foreach ( self::$plugin_headers as $header => $required ) {

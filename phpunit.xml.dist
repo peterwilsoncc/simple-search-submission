@@ -8,7 +8,7 @@
 	convertWarningsToExceptions="true"
 	>
 	<testsuites>
-		<testsuite name="no-fuss-indexnow">
+		<testsuite name="simple-search-submission">
 			<directory prefix="class-test-" suffix=".php">./tests/</directory>
 			<!-- exclude>./tests/class-test-sample.php</exclude -->
 		</testsuite>

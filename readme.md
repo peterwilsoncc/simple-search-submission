@@ -1,2 +1,2 @@
-# No Fuss IndexNow
+# Simple Search Submission for IndexNow
 

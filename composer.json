@@ -1,6 +1,6 @@
 {
-    "name": "peterwilsoncc/no-fuss-indexnow",
-    "description": "No Fuss IndexNow.",
+    "name": "peterwilsoncc/simple-search-submission",
+    "description": "Simple Search Submission for IndexNow.",
     "type": "wordpress-plugin",
     "require-dev": {
         "dealerdirect/phpcodesniffer-composer-installer": "^1.0",

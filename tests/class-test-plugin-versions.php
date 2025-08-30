@@ -2,14 +2,14 @@
 /**
  * Test Plugin Versions match.
  *
- * @package NoFussIndexNow
+ * @package SimpleSearchSubmission
  */
 
-namespace PWCC\NoFussIndexNow\Tests;
+namespace PWCC\SimpleSearchSubmission\Tests;
 
 use WP_UnitTestCase;
 
-use const PWCC\NoFussIndexNow\PLUGIN_VERSION;
+use const PWCC\SimpleSearchSubmission\PLUGIN_VERSION;
 
 /**
  * Test Plugin Readme and PHP Headers
@@ -37,11 +37,7 @@ class Test_Plugin_Versions extends WP_UnitTestCase {
 	public function test_plugin_version_header() {
 		// Get the plugin headers.
 		// Plugin name.
-		$plugin_file_name = basename( dirname( __DIR__ ) ) . '.php';
-		if ( ! file_exists( __DIR__ . "/../{$plugin_file_name}" ) ) {
-			// Fallback to the generic plugin file name.
-			$plugin_file_name = 'plugin.php';
-		}
+		$plugin_file_name = 'simple-search-submission.php';
 
 		$plugin_file_data = get_file_data(
 			__DIR__ . "/../{$plugin_file_name}",

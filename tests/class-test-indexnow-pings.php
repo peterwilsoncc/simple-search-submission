@@ -2,10 +2,10 @@
 /**
  * Test Plugin Pings of IndexNow
  *
- * @package NoFussIndexNow
+ * @package SimpleSearchSubmission
  */
 
-namespace PWCC\NoFussIndexNow\Tests;
+namespace PWCC\SimpleSearchSubmission\Tests;
 
 use WP_UnitTestCase;
 use WP_UnitTest_Factory;

@@ -1,11 +1,11 @@
 <?php
 /**
- * No Fuss IndexNow
+ * Simple Search Submission for IndexNow
  *
- * @package           NoFussIndexNow
+ * @package           SimpleSearchSubmission
  */
 
-namespace PWCC\NoFussIndexNow;
+namespace PWCC\SimpleSearchSubmission;
 
 const PLUGIN_VERSION = '1.0.0';
 

@@ -1,22 +1,22 @@
 <?php
 /**
- * No Fuss IndexNow
+ * Simple Search Submission for IndexNow
  *
- * @package           NoFussIndexNow
+ * @package           SimpleSearchSubmission
  * @author            Peter Wilson
  * @copyright         2025 Peter Wilson, FAIR Contributors
  * @license           GPL-2.0-or-later
  *
  * @wordpress-plugin
- * Plugin Name: No Fuss IndexNow
- * Description: No Fuss IndexNow
+ * Plugin Name: Simple Search Submission for IndexNow
+ * Description: Simple Search Submission for IndexNow
  * Version: 1.0.0
  * Requires at least: 6.5
  * Requires PHP: 8.0
  * Author: Peter Wilson
  * Author URI: https://peterwilson.cc
  * License: GPL-2.0-or-later
- * Text Domain: no-fuss-indexnow
+ * Text Domain: simple-search-submission
  *
  * This plugin is based on the IndexNow code from the FAIR plugin, copyright
  * 2025 FAIR contributors, and licensed under the GNU General Public License.
@@ -36,7 +36,7 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-namespace PWCC\NoFussIndexNow;
+namespace PWCC\SimpleSearchSubmission;
 
 require_once __DIR__ . '/inc/namespace.php';
 
