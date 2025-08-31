@@ -36,15 +36,15 @@ function bootstrap() {
 	 * @param bool $notify_async Whether to notify IndexNow asynchronously.
 	 *                           Default is false, meaning synchronous pings.
 	 */
-	$notify_async = apply_filters( 'pwcc/index-now/notify-async', false );
+	$notify_async = apply_filters( 'simple_search_submission_notify_async', false );
 
 	if ( $notify_async ) {
 		// Use the async ping action.
-		add_action( 'pwcc/index-now/ping', __NAMESPACE__ . '\\async_ping_indexnow', 10, 1 );
-		add_action( 'pwcc/index-now/async_ping', __NAMESPACE__ . '\\ping_indexnow', 10, 1 );
+		add_action( 'simple_search_submission_ping', __NAMESPACE__ . '\\async_ping_indexnow', 10, 1 );
+		add_action( 'simple_search_submission_async_ping', __NAMESPACE__ . '\\ping_indexnow', 10, 1 );
 	} else {
 		// Use the synchronous ping action.
-		add_action( 'pwcc/index-now/ping', __NAMESPACE__ . '\\ping_indexnow', 10, 1 );
+		add_action( 'simple_search_submission_ping', __NAMESPACE__ . '\\ping_indexnow', 10, 1 );
 	}
 }
 
@@ -55,7 +55,7 @@ function bootstrap() {
  * @return array Modified array of query vars.
  */
 function register_query_vars( $vars ) {
-	$vars[] = 'pwcc_indexnow_key';
+	$vars[] = 'simple_search_submission_key';
 	return $vars;
 }
 
@@ -67,7 +67,7 @@ function add_key_rewrite_rule() {
 
 	add_rewrite_rule(
 		'pwcc-indexnow-' . $key . '$',
-		'index.php?pwcc_indexnow_key=' . $key,
+		'index.php?simple_search_submission_key=' . $key,
 		'top'
 	);
 }
@@ -78,13 +78,13 @@ function add_key_rewrite_rule() {
  * @param \WP $wp WordPress instance.
  */
 function handle_key_file_request( $wp ) {
-	if ( empty( $wp->query_vars['pwcc_indexnow_key'] ) ) {
+	if ( empty( $wp->query_vars['simple_search_submission_key'] ) ) {
 		return;
 	}
 
 	$key = get_indexnow_key();
-	if ( ! $key || $wp->query_vars['pwcc_indexnow_key'] !== $key ) {
-		$error = 'Invalid key: ' . get_query_var( 'pwcc_indexnow_key' );
+	if ( ! $key || $wp->query_vars['simple_search_submission_key'] !== $key ) {
+		$error = 'Invalid key: ' . get_query_var( 'simple_search_submission_key' );
 		wp_die( esc_html( $error ), 'IndexNow Key Error', array( 'response' => 403 ) );
 		return;
 	}
@@ -106,14 +106,14 @@ function handle_key_file_request( $wp ) {
  * @return string Unique site key.
  */
 function get_indexnow_key(): string {
-	$key = get_option( 'pwcc_indexnow_key' );
+	$key = get_option( 'simple_search_submission_key' );
 
 	if ( ! $key ) {
 		// Generate a random key that meets IndexNow requirements.
 		// Must be 8-128 hexadecimal characters (a-f, 0-9).
 		$key = strtolower( wp_generate_password( 32, false, false ) );
 
-		update_option( 'pwcc_indexnow_key', $key );
+		update_option( 'simple_search_submission_key', $key );
 
 		// Flush the rewrite rules.
 		flush_rewrite_rules();
@@ -145,7 +145,7 @@ function maybe_ping_indexnow( $new_status, $old_status, $post ): void {
 	 * @param string    $old_status     The old post status.
 	 * @param \WP_Post  $post           The post object.
 	 */
-	$preflight_ping = apply_filters( 'pwcc/index-now/pre-maybe-ping-indexnow', null, $new_status, $old_status, $post );
+	$preflight_ping = apply_filters( 'simple_search_submission_pre_maybe_ping_indexnow', null, $new_status, $old_status, $post );
 
 	if ( is_bool( $preflight_ping ) ) {
 		if ( true === $preflight_ping ) {
@@ -154,7 +154,7 @@ function maybe_ping_indexnow( $new_status, $old_status, $post ): void {
 			 *
 			 * @param \WP_Post $post The post object.
 			 */
-			do_action( 'pwcc/index-now/ping', $post );
+			do_action( 'simple_search_submission_ping', $post );
 		}
 		return;
 	}
@@ -203,7 +203,7 @@ function maybe_ping_indexnow( $new_status, $old_status, $post ): void {
 	}
 
 	/** This action is documented in inc/namespace.php */
-	do_action( 'pwcc/index-now/ping', $post );
+	do_action( 'simple_search_submission_ping', $post );
 }
 
 /**
@@ -223,7 +223,7 @@ function get_post_ping_urls( $post ) {
 	}
 
 	// Get previous pings from the post meta.
-	$ping_urls = get_post_meta( $post->ID, '_pwcc_indexnow_urls', true );
+	$ping_urls = get_post_meta( $post->ID, '_simple_search_submission_urls', true );
 	if ( empty( $ping_urls ) || ! is_array( $ping_urls ) ) {
 		// Initialize an empty array if no URLs are found.
 		$ping_urls = array();
@@ -260,7 +260,7 @@ function add_post_ping_urls( $post, $urls ) {
 		return;
 	}
 
-	update_post_meta( $post->ID, '_pwcc_indexnow_urls', $ping_urls );
+	update_post_meta( $post->ID, '_simple_search_submission_urls', $ping_urls );
 }
 
 /**
@@ -298,7 +298,7 @@ function ping_indexnow( $post ) {
 	 *                        Default is an array with the single URL of the post.
 	 * @param \WP_Post $post The post object.
 	 */
-	$url_list = apply_filters( 'pwcc/index-now/url-list', $url_list, $post );
+	$url_list = apply_filters( 'simple_search_submission_url_list', $url_list, $post );
 
 	if ( empty( $url_list ) ) {
 		// If no URLs to ping, do nothing.
@@ -306,7 +306,7 @@ function ping_indexnow( $post ) {
 	}
 
 	if ( empty( get_option( 'permalink_structure' ) ) ) {
-		$key_location = home_url( '?pwcc_indexnow_key=' . $key );
+		$key_location = home_url( '?simple_search_submission_key=' . $key );
 	} else {
 		$key_location = trailingslashit( home_url( 'pwcc-indexnow-' . $key ) );
 	}
@@ -318,7 +318,7 @@ function ping_indexnow( $post ) {
 	 * @param array   $url_list     The list if URLs to be submitted.
 	 * @param WP_Post $post         The post object.
 	 */
-	$key_location = apply_filters( 'pwcc/index-now/key-location', $key_location, $url_list, $post );
+	$key_location = apply_filters( 'simple_search_submission_key_location', $key_location, $url_list, $post );
 
 	$data    = array(
 		'host'        => wp_parse_url( $key_location, PHP_URL_HOST ),
@@ -350,7 +350,7 @@ function ping_indexnow( $post ) {
 		 * @param \WP_Post $post     The post object
 		 * @param string[] $url_list The list of URLs to be pinged
 		 */
-		&& apply_filters( 'pwcc/index-now/bypass-non-production-environment', true, $post, $url_list )
+		&& apply_filters( 'simple_search_submission_bypass_non_production_environment', true, $post, $url_list )
 	) {
 		// In development, log the request for debugging.
 		// phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log, WordPress.PHP.DevelopmentFunctions.error_log_print_r
@@ -396,7 +396,7 @@ function async_ping_indexnow( $post ) {
 
 	$post_id = $post->ID;
 
-	if ( ! wp_next_scheduled( 'pwcc/index-now/async_ping', array( $post_id ) ) ) {
-		wp_schedule_single_event( time() + 5, 'pwcc/index-now/async_ping', array( $post_id ) );
+	if ( ! wp_next_scheduled( 'simple_search_submission_async_ping', array( $post_id ) ) ) {
+		wp_schedule_single_event( time() + 5, 'simple_search_submission_async_ping', array( $post_id ) );
 	}
 }
