@@ -1,6 +1,6 @@
 # Simple Search Submission for IndexNow
 
-A simplified plugin for submitting crawl requests to search engines supporting IndexNow.
+A simplified WordPress plugin for submitting crawl requests to search engines supporting IndexNow.
 
 ## Description
 
