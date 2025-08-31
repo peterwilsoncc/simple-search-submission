@@ -49,6 +49,27 @@ function bootstrap() {
 }
 
 /**
+ * Activation hook for the plugin.
+ *
+ * Ensures the key is created, adds and flushes rewrite rules.
+ */
+function activation_routine() {
+	get_indexnow_key();
+	add_key_rewrite_rule();
+	flush_rewrite_rules();
+}
+
+/**
+ * Deactivation hook for the plugin.
+ *
+ * Removes the key from the database.
+ */
+function deactivation_routine() {
+	delete_option( 'simple_search_submission_key' );
+	flush_rewrite_rules();
+}
+
+/**
  * Register query vars.
  *
  * @param array $vars Array of query vars.

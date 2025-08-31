@@ -42,3 +42,6 @@ require_once __DIR__ . '/inc/namespace.php';
 
 // Run late to give themes and plugins a chance to set up asynchronous pings.
 add_action( 'after_setup_theme', __NAMESPACE__ . '\\bootstrap', 20 );
+
+register_activation_hook( __FILE__, __NAMESPACE__ . '\\activation_routine' );
+register_deactivation_hook( __FILE__, __NAMESPACE__ . '\\deactivation_routine' );
