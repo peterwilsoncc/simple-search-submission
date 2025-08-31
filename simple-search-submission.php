@@ -11,8 +11,8 @@
  * Plugin Name: Simple Search Submission for IndexNow
  * Description: Simple Search Submission for IndexNow
  * Version: 1.0.0
- * Requires at least: 6.5
- * Requires PHP: 8.0
+ * Requires at least: 6.3
+ * Requires PHP: 7.4
  * Author: Peter Wilson
  * Author URI: https://peterwilson.cc
  * License: GPL-2.0-or-later
