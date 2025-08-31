@@ -66,7 +66,7 @@ function add_key_rewrite_rule() {
 	$key = get_indexnow_key();
 
 	add_rewrite_rule(
-		'pwcc-indexnow-' . $key . '$',
+		'simple-search-submission-key-' . $key . '$',
 		'index.php?simple_search_submission_key=' . $key,
 		'top'
 	);
@@ -308,7 +308,7 @@ function ping_indexnow( $post ) {
 	if ( empty( get_option( 'permalink_structure' ) ) ) {
 		$key_location = home_url( '?simple_search_submission_key=' . $key );
 	} else {
-		$key_location = trailingslashit( home_url( 'pwcc-indexnow-' . $key ) );
+		$key_location = trailingslashit( home_url( 'simple-search-submission-key-' . $key ) );
 	}
 
 	/**
