@@ -34,7 +34,7 @@ jobs:
             php-versions: '8.4'
           - wp-versions: '6.6'
             php-versions: '8.4'
-    name: WP ${{ matrix.wp-versions }} / PHP ${{ matrix.php-versions }}
+    name: WP ${{ matrix.wp-versions }}/PHP ${{ matrix.php-versions }}
 
     steps:
     - name: Checkout
