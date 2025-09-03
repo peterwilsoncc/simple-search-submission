@@ -13,13 +13,14 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  run:
+  phpunit:
     runs-on: ubuntu-latest
     env:
       DB_DATABASE: wordpress_test
       DB_USER: root
       DB_PASSWORD: root
     strategy:
+      fail-fast: false
       matrix:
         wp-versions: [ '6.3', '6.4', '6.5', '6.6', '6.7', '6.8', 'latest', 'trunk' ]
         php-versions: ['7.4', '8.0', '8.1', '8.2', '8.3', '8.4' ]
@@ -66,3 +67,13 @@ jobs:
       env:
         WP_TESTS_DIR: ${{ runner.temp }}/wordpress-tests-lib
         WP_CORE_DIR: ${{ runner.temp }}/wordpress
+
+  required-status-checks:
+    name: PHPUnit Required Status Checks
+    runs-on: 'ubuntu-24.04'
+    needs: [ 'phpunit' ]
+    if: ${{ always() }}
+    steps:
+      - name: Detect any failing status checks
+        run: |
+          [[ "${{ join(needs.*.result, ' ') }}" =~ ^(success ?)+$ ]] || exit 1
