@@ -66,3 +66,13 @@ jobs:
       env:
         WP_TESTS_DIR: ${{ runner.temp }}/wordpress-tests-lib
         WP_CORE_DIR: ${{ runner.temp }}/wordpress
+
+  required-status-checks:
+    name: PHPUnit Required Status Checks
+    runs-on: 'ubuntu-24.04'
+    needs: [ 'phpunit' ]
+    if: ${{ always() }}
+    steps:
+      - name: Detect any failing status checks
+        run: |
+          [[ "${{ join(needs.*.result, ' ') }}" =~ ^(success ?)+$ ]] || exit 1
