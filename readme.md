@@ -23,9 +23,7 @@ The biggest features of this plugin are the features that it's missing:
 * there are no custom database tables, it just works
 * simply put, there is no fuss!
 
-Simple Search Submission for IndexNow submits the update requests as you save your content. If you wish to submit the URLs
-asynchronously via a cron job, you can include the code `add_filter( 'simple_search_submission_notify_async', '__return_true' );`
-in your theme or or plugin.
+Simple Search Submission for IndexNow submits the update requests as you save your content. If you wish to submit the URLs asynchronously via a cron job, you can include the code `add_filter( 'simple_search_submission_notify_async', '__return_true' );` in your theme or or plugin.
 
 ## Installation
 
@@ -66,8 +64,7 @@ This plugin is intended as a replacement for the Bing plugin that is much simpli
 
 IndexNow supports both notifications for newly published content and newly unpublished content.
 
-When unpublishing content, the notification serves as a request to de-index the newly 404 response on your site.
-Sending a de-indexing request ensures that your site's old content does not appear in indexes and result in a file not found error.
+When unpublishing content, the notification serves as a request to de-index the newly 404 response on your site. Sending a de-indexing request ensures that your site's old content does not appear in indexes and result in a file not found error.
 
 ### Are notifications sent from non-production sites?
 
@@ -75,8 +72,7 @@ No.
 
 The plugin uses `wp_get_environment_type()` to determine whether to send notifications to IndexNow.
 
-For non-production environments, the request that would have been sent are logged in the PHP error log file to allow for
-developers to debug any requests. The notification is not actually sent to IndexNow.
+For non-production environments, the request that would have been sent are logged in the PHP error log file to allow for developers to debug any requests. The notification is not actually sent to IndexNow.
 
 ## Changelog
 
