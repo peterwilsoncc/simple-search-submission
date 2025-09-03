@@ -67,6 +67,10 @@ For non-production environments, the request that would have been sent are logge
 
 == Changelog ==
 
+= 1.1.0 =
+
+* Initial WordPress.org release.
+
 = 1.0.0 =
 
 * Initial release

@@ -37,7 +37,7 @@ composer require peterwilsoncc/simple-search-submission
 
 *Downloads*
 
-* Via WordPress.org (Pending)
+* [Via WordPress.org](https://wordpress.org/plugins/simple-search-submission/)
 * [Via GitHub](https://github.com/peterwilsoncc/simple-search-submission/releases/latest)
 
 ## Frequently Asked Questions
@@ -75,6 +75,10 @@ The plugin uses `wp_get_environment_type()` to determine whether to send notific
 For non-production environments, the request that would have been sent are logged in the PHP error log file to allow for developers to debug any requests. The notification is not actually sent to IndexNow.
 
 ## Changelog
+
+### 1.1.0
+
+Initial WordPress.org release
 
 ### 1.0.0
 
