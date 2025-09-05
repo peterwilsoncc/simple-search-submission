@@ -42,6 +42,10 @@ composer require peterwilsoncc/simple-search-submission
 
 ## Frequently Asked Questions
 
+### Which search engines support IndexNow?
+
+At the time of writing, IndexNow is supported by Bing, Naver, Seznam, Yandex and Yep.
+
 ### Where is the settings page?
 
 There is no settings page for this plugin, simply activate the plugin and it will work as intended.
