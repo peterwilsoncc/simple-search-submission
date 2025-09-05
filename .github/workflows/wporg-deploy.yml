@@ -19,6 +19,15 @@ jobs:
         git config --global user.name "10upbot on GitHub"
         git commit -m "Remove readme.md for WordPress.org deploy"
 
+    - name: Install Subversion.
+      run: |
+        # Check if SVN is installed, if not install it.
+        if ! command -v svn &> /dev/null
+        then
+            sudo apt-get update -y
+            sudo apt-get install -y subversion
+        fi
+
     - name: WordPress Plugin Deploy
       id: deploy
       uses: 10up/action-wordpress-plugin-deploy@stable
