@@ -1,6 +1,6 @@
 === Simple Search Submission for IndexNow ===
 Contributors: peterwilsoncc
-Tags:
+Tags: seo, indexnow, crawling
 Tested up to: 6.8
 Stable tag: 1.1.0
 License: GPL-2.0-or-later
