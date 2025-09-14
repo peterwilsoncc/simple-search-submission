@@ -19,12 +19,21 @@ function is_noindex( $post ) {
 		return true; // No post found, treat as noindex.
 	}
 
-	// Check for Yoast SEO noindex.
+	/*
+	 * Check in order of number of active installs.
+	 *
+	 * To optimize performance for the majority of users, the
+	 * checks are ordered by the popularity of the SEO plugins.
+	 *
+	 * Popularity data from the WordPress plugin repository.
+	 */
+
+	// Check for Yoast SEO noindex (10 million+).
 	if ( is_yoast_noindex( $post ) ) {
 		return true;
 	}
 
-	// Check All in One SEO noindex.
+	// Check All in One SEO noindex (3 million+).
 	if ( is_aioseo_noindex( $post ) ) {
 		return true;
 	}
