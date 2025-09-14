@@ -24,6 +24,11 @@ function is_noindex( $post ) {
 		return true;
 	}
 
+	// Check All in One SEO noindex.
+	if ( is_aioseo_noindex( $post ) ) {
+		return true;
+	}
+
 	return false; // Default to not noindex.
 }
 
@@ -48,4 +53,27 @@ function is_yoast_noindex( $post ) {
 	}
 
 	return 'noindex' === $robots['index'];
+}
+
+/**
+ * Check All in One SEO noindex status.
+ *
+ * @param \WP_Post|int $post The post object or ID.
+ * @return bool True if AIOSEO sets the post to noindex, false otherwise.
+ */
+function is_aioseo_noindex( $post ) {
+	if ( ! function_exists( 'aioseo' ) ) {
+		return false; // AIOSEO is not active.
+	}
+
+	$post    = get_post( $post );
+	$post_id = $post->ID;
+
+	$post_meta = aioseo()->meta->metaData->getMetaData( $post_id );
+
+	if ( ! $post_meta->robots_default && isset( $post_meta->robots_noindex ) ) {
+		return $post_meta->robots_noindex;
+	}
+
+	return aioseo()->helpers->isPostTypeNoindexed( get_post_type( $post ) );
 }
