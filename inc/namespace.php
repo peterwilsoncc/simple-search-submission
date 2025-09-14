@@ -216,6 +216,16 @@ function maybe_ping_indexnow( $new_status, $old_status, $post ): void {
 	}
 
 	/*
+	 * Skip for noindexed posts that have never pinged IndexNow.
+	 *
+	 * Previously pinged URLs are still pinged to encourage removal from
+	 * search engines.
+	 */
+	if ( SEOCompat\is_noindex( $post ) && empty( get_post_ping_urls( $post ) ) ) {
+		return;
+	}
+
+	/*
 	 * Prevent double pings for block editor legacy meta boxes.
 	 */
 	if (
