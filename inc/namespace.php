@@ -383,7 +383,7 @@ function ping_indexnow( $post ) {
 	}
 
 	// Ping IndexNow.
-	$response = wp_remote_post(
+	$response = wp_safe_remote_post(
 		'https://api.indexnow.org/indexnow',
 		$request
 	);
