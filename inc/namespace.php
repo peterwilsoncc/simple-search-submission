@@ -453,7 +453,17 @@ function async_ping_indexnow( $post ) {
 
 	$post_id = $post->ID;
 
+	/**
+	 * Filter the delay (in seconds) before the asynchronous ping runs.
+	 *
+	 * @param int $delay The delay in seconds. Default is 10 seconds.
+	 */
+	$delay = apply_filters( 'simple_search_submission_async_wait', 10, $post );
+
+	// Revert delay to default if it isn't numeric.
+	$delay = is_numeric( $delay ) ? (int) $delay : 10;
+
 	if ( ! wp_next_scheduled( 'simple_search_submission_async_ping', array( $post_id ) ) ) {
-		wp_schedule_single_event( time() + 5, 'simple_search_submission_async_ping', array( $post_id ) );
+		wp_schedule_single_event( time() + $delay, 'simple_search_submission_async_ping', array( $post_id ) );
 	}
 }
