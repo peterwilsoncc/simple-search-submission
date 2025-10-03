@@ -212,6 +212,16 @@ function maybe_ping_indexnow( $new_status, $old_status, $post ): void {
 	}
 
 	/*
+	 * Skip for noindexed posts that have never pinged IndexNow.
+	 *
+	 * Previously pinged URLs are still pinged to encourage removal from
+	 * search engines.
+	 */
+	if ( SEOCompat\is_noindex( $post ) && empty( get_post_ping_urls( $post ) ) ) {
+		return;
+	}
+
+	/*
 	 * Prevent double pings for block editor legacy meta boxes.
 	 */
 	if (
@@ -300,15 +310,16 @@ function ping_indexnow( $post ) {
 	$current_url = get_permalink( $post );
 
 	/*
-	 * Only add the current URL if it is publicly viewable.
+	 * Only add the current URL if it is publicly viewable and indexed.
 	 *
-	 * This prevents unnecessary pings for private or draft posts in
-	 * which the current URL will 404. If the URL has been previously
-	 * pinged, it will be included in the list of URLs to ping as IndexNow
-	 * allows for new 404s to be pinged to encourage search engines
-	 * to remove the URL from their index.
+	 * This prevents unnecessary pings for new URLs that are either not
+	 * viewable (ie, will 404) or noindexed by an SEO plugin.
+	 *
+	 * If the URL has been previously sent to IndexNow it will still be
+	 * pinged to encourage search engines to de-index the page from their
+	 * search engine, either because it's a 404 or should not be listed.
 	 */
-	if ( is_post_publicly_viewable( $post ) && ! in_array( $current_url, $url_list, true ) ) {
+	if ( is_post_publicly_viewable( $post ) && ! SEOCompat\is_noindex( $post ) && ! in_array( $current_url, $url_list, true ) ) {
 		$url_list[] = get_permalink( $post );
 	}
 
@@ -417,7 +428,17 @@ function async_ping_indexnow( $post ) {
 
 	$post_id = $post->ID;
 
+	/**
+	 * Filter the delay (in seconds) before the asynchronous ping runs.
+	 *
+	 * @param int $delay The delay in seconds. Default is 10 seconds.
+	 */
+	$delay = apply_filters( 'simple_search_submission_async_wait', 10, $post );
+
+	// Revert delay to default if it isn't numeric.
+	$delay = is_numeric( $delay ) ? (int) $delay : 10;
+
 	if ( ! wp_next_scheduled( 'simple_search_submission_async_ping', array( $post_id ) ) ) {
-		wp_schedule_single_event( time() + 5, 'simple_search_submission_async_ping', array( $post_id ) );
+		wp_schedule_single_event( time() + $delay, 'simple_search_submission_async_ping', array( $post_id ) );
 	}
 }
