@@ -339,15 +339,12 @@ function ping_indexnow( $post ) {
 	$current_url = get_permalink( $post );
 
 	/*
-	 * Only add the current URL if it is publicly viewable.
+	 * Only add the current URL if it is publicly viewable and indexed.
 	 *
-	 * This prevents unnecessary pings for private or draft posts in
-	 * which the current URL will 404. If the URL has been previously
-	 * pinged, it will be included in the list of URLs to ping as IndexNow
-	 * allows for new 404s to be pinged to encourage search engines
-	 * to remove the URL from their index.
+	 * This prevents unnecessary pings for new URLs that are either not
+	 * viewable (ie, will 404) or noindexed by an SEO plugin.
 	 */
-	if ( is_post_publicly_viewable( $post ) && ! in_array( $current_url, $url_list, true ) ) {
+	if ( is_post_publicly_viewable( $post ) && ! SEOCompat\is_noindex( $post ) && ! in_array( $current_url, $url_list, true ) ) {
 		$url_list[] = get_permalink( $post );
 	}
 
