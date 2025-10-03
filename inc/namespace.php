@@ -343,6 +343,10 @@ function ping_indexnow( $post ) {
 	 *
 	 * This prevents unnecessary pings for new URLs that are either not
 	 * viewable (ie, will 404) or noindexed by an SEO plugin.
+	 *
+	 * If the URL has been previously sent to IndexNow it will still be
+	 * pinged to encourage search engines to de-index the page from their
+	 * search engine, either because it's a 404 or should not be listed.
 	 */
 	if ( is_post_publicly_viewable( $post ) && ! SEOCompat\is_noindex( $post ) && ! in_array( $current_url, $url_list, true ) ) {
 		$url_list[] = get_permalink( $post );
