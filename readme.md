@@ -78,6 +78,14 @@ The plugin uses `wp_get_environment_type()` to determine whether to send notific
 
 For non-production environments, the request that would have been sent are logged in the PHP error log file to allow for developers to debug any requests. The notification is not actually sent to IndexNow.
 
+### What happens for sites set to "Discourage search engines from indexing this site"?
+
+There is no check for this setting in the plugin.
+
+As an SEO feature, the expectation for installing this plugin that you want search engines to index your site. If this is not the case then you should deactivate this plugin.
+
+As mentioned above, notifications are not sent for non-production sites.
+
 ## Changelog
 
 ### 1.1.0
