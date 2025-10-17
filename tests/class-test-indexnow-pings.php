@@ -285,6 +285,71 @@ class Test_IndexNow_Pings extends WP_UnitTestCase {
 	}
 
 	/**
+	 * Ensure de-indexed URLs are pinged only once for private post type transitions.
+	 */
+	public function test_no_duplicate_pings_on_private_post_type_transition() {
+		$post_id = self::$post_ids['publish'];
+
+		// Set the post to a private status.
+		wp_update_post(
+			array(
+				'ID'          => $post_id,
+				'post_status' => 'private',
+			)
+		);
+
+		// Ensure the old URL is pinged.
+		$this->assertPing( home_url( '/2025/test-post-publish/' ), 'Old post URL should be pinged after status change.' );
+
+		// Clear the ping list.
+		$this->pings = array();
+
+		// Set the post to a draft.
+		wp_update_post(
+			array(
+				'ID'          => $post_id,
+				'post_status' => 'draft',
+			)
+		);
+		// Ensure the old URL is not pinged again.
+		$this->assertNotPing( home_url( '/2025/test-post-publish/' ), 'Old post URL should not be pinged again after second status change.' );
+	}
+
+	/**
+	 * Ensure previously deindexed URLs that now redirect are re-pinged.
+	 */
+	public function test_republished_post_with_slug_change_pings_old_urls() {
+		$post_id = self::$post_ids['publish'];
+
+		// Set the post to draft.
+		wp_update_post(
+			array(
+				'ID'          => $post_id,
+				'post_status' => 'draft',
+			)
+		);
+
+		// Ensure the old post URL is pinged.
+		$this->assertPing( home_url( '/2025/test-post-publish/' ), 'Old post URL should be pinged after unpublishing.' );
+
+		// Clear the ping list.
+		$this->pings = array();
+
+		// Update the post slug and re-publish all in one update.
+		wp_update_post(
+			array(
+				'ID'          => $post_id,
+				'post_name'   => 'final-test-post-publish',
+				'post_status' => 'publish',
+			)
+		);
+
+		// Ensure both URLs are pinged as the old URL is now a redirect.
+		$this->assertPing( home_url( '/2025/test-post-publish/' ), 'Old post URL should be pinged after slug and status update to index the redirect.' );
+		$this->assertPing( home_url( '/2025/final-test-post-publish/' ), 'New post URL should be pinged after slug and status update.' );
+	}
+
+	/**
 	 * Ensure updating the pinged URLs lists appends the new URLs correctly.
 	 */
 	public function test_update_post_ping_urls_appends_correctly() {
