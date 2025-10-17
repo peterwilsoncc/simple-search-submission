@@ -388,4 +388,27 @@ class Test_IndexNow_Pings extends WP_UnitTestCase {
 		$last_ping_url = SimpleSearchSubmission\get_last_post_ping_url( $post_id );
 		$this->assertSame( home_url( '/2025/first-update-test-post-publish/' ), $last_ping_url, 'Last ping URL should be the restored first updated URL.' );
 	}
+
+	/**
+	 * Ensure URL list never contains duplicates.
+	 */
+	public function test_update_post_ping_urls_no_duplicates() {
+		$post_id = self::$post_ids['publish'];
+
+		// Update the ping list (no need to actually ping).
+		SimpleSearchSubmission\add_post_ping_urls( $post_id, array( home_url( '/2025/test-post-publish/' ) ) );
+		SimpleSearchSubmission\add_post_ping_urls( $post_id, array( home_url( '/2025/test-post-publish-two/' ) ) );
+		SimpleSearchSubmission\add_post_ping_urls( $post_id, array( home_url( '/2025/test-post-publish-two/' ) ) );
+		SimpleSearchSubmission\add_post_ping_urls( $post_id, array( home_url( '/2025/test-post-publish/' ) ) );
+
+		// Ensure there are no duplicates.
+		$ping_urls = SimpleSearchSubmission\get_post_ping_urls( $post_id );
+		$this->assertCount( 2, $ping_urls, 'Ping URL list should not contain both URLs.' );
+
+		$expected = array(
+			home_url( '/2025/test-post-publish-two/' ),
+			home_url( '/2025/test-post-publish/' ),
+		);
+		$this->assertSame( $expected, $ping_urls, 'Ping URL list should not contain duplicates.' );
+	}
 }
