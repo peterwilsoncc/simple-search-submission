@@ -91,10 +91,15 @@ As mentioned above, notifications are not sent for non-production sites.
 
 ## Changelog
 
+### 1.2.0
+
+* Only submit de-indexed and redirect URLs to IndexNow once.
+* Use `wp_safe_remote_post()` for sending requests to IndexNow.
+
 ### 1.1.0
 
 Initial WordPress.org release
 
 ### 1.0.0
 
-* Initial release
+Initial release

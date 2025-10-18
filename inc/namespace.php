@@ -7,7 +7,7 @@
 
 namespace PWCC\SimpleSearchSubmission;
 
-const PLUGIN_VERSION = '1.1.0';
+const PLUGIN_VERSION = '1.2.0';
 
 /**
  * Bootstrap the plugin.
