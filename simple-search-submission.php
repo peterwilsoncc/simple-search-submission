@@ -10,7 +10,7 @@
  * @wordpress-plugin
  * Plugin Name: Simple Search Submission for IndexNow
  * Description: A simplified plugin for submitting crawl requests to search engines supporting IndexNow.
- * Version: 1.1.0
+ * Version: 1.2.0
  * Requires at least: 6.3
  * Requires PHP: 7.4
  * Author: Peter Wilson

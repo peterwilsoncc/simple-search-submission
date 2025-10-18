@@ -2,7 +2,7 @@
 Contributors: peterwilsoncc
 Tags: seo, indexnow, crawling
 Tested up to: 6.8
-Stable tag: 1.1.0
+Stable tag: 1.2.0
 License: GPL-2.0-or-later
 License URI: https://github.com/peterwilsoncc/simple-search-submission/blob/main/LICENSE
 
@@ -82,10 +82,15 @@ As mentioned above, notifications are not sent for non-production sites.
 
 == Changelog ==
 
+= 1.2.0 =
+
+* Only submit de-indexed and redirect URLs to IndexNow once.
+* Use `wp_safe_remote_post()` for sending requests to IndexNow.
+
 = 1.1.0 =
 
-* Initial WordPress.org release.
+Initial WordPress.org release.
 
 = 1.0.0 =
 
-* Initial release
+Initial release
