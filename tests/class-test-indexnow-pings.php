@@ -245,7 +245,7 @@ class Test_IndexNow_Pings extends WP_UnitTestCase {
 	}
 
 	/**
-	 * Ensure de-indexed urls are pinged once only.
+	 * Ensure de-indexed URLs are pinged once only.
 	 */
 	public function test_no_duplicate_pings_on_deindexed_url() {
 		$post_id = self::$post_ids['publish'];
