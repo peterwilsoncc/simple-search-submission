@@ -15,6 +15,9 @@ Crawl requests will be sent to search engines when:
 * new content is published
 * existing content is updated
 * existing content is unpublished (this encourages de-indexing)
+* the post slug changes (both the old and new are sent index the redirect URL)
+
+De-indexed and redirect URLs are only sent to IndexNow once.
 
 The biggest features of this plugin are the features that it's missing:
 
