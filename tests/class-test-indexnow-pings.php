@@ -7,6 +7,7 @@
 
 namespace PWCC\SimpleSearchSubmission\Tests;
 
+use PWCC\SimpleSearchSubmission;
 use WP_UnitTestCase;
 use WP_UnitTest_Factory;
 
@@ -241,5 +242,173 @@ class Test_IndexNow_Pings extends WP_UnitTestCase {
 		// unregister_post_status doesn't exist.
 		unset( $wp_post_statuses['custom_private'] );
 		$this->assertNotPing( get_permalink( $post_id ), 'Custom private post status should not ping.' );
+	}
+
+	/**
+	 * Ensure de-indexed URLs are pinged once only.
+	 */
+	public function test_no_duplicate_pings_on_deindexed_url() {
+		$post_id = self::$post_ids['publish'];
+
+		// Update the post slug.
+		wp_update_post(
+			array(
+				'ID'        => $post_id,
+				'post_name' => 'updated-test-post-publish',
+			)
+		);
+
+		// Ensure both old and new URLs are pinged.
+		$this->assertPing( home_url( '/2025/test-post-publish/' ), 'Ping should include the old post URL after slug change.' );
+		$this->assertPing( home_url( '/2025/updated-test-post-publish/' ), 'Ping should include the new post URL after slug change.' );
+		// Ensure last ping URL is the updated URL.
+		$last_ping_url = SimpleSearchSubmission\get_last_post_ping_url( $post_id );
+		$this->assertSame( home_url( '/2025/updated-test-post-publish/' ), $last_ping_url, 'Last ping URL should be the updated URL.' );
+
+		// Clear the ping list.
+		$this->pings = array();
+
+		// Update the post content.
+		wp_update_post(
+			array(
+				'ID'           => $post_id,
+				'post_content' => 'Another update to Test Post',
+			)
+		);
+
+		// Ensure only the new URL is pinged again.
+		$this->assertNotPing( home_url( '/2025/test-post-publish/' ), 'Old post URL should not be pinged again after content update.' );
+		$this->assertPing( home_url( '/2025/updated-test-post-publish/' ), 'New post URL should be pinged again after content update.' );
+		// Ensure last ping URL is the updated URL.
+		$last_ping_url = SimpleSearchSubmission\get_last_post_ping_url( $post_id );
+		$this->assertSame( home_url( '/2025/updated-test-post-publish/' ), $last_ping_url, 'Last ping URL should be the updated URL after the second ping.' );
+	}
+
+	/**
+	 * Ensure de-indexed URLs are pinged only once for private post type transitions.
+	 */
+	public function test_no_duplicate_pings_on_private_post_type_transition() {
+		$post_id = self::$post_ids['publish'];
+
+		// Set the post to a private status.
+		wp_update_post(
+			array(
+				'ID'          => $post_id,
+				'post_status' => 'private',
+			)
+		);
+
+		// Ensure the old URL is pinged.
+		$this->assertPing( home_url( '/2025/test-post-publish/' ), 'Old post URL should be pinged after status change.' );
+
+		// Clear the ping list.
+		$this->pings = array();
+
+		// Set the post to a draft.
+		wp_update_post(
+			array(
+				'ID'          => $post_id,
+				'post_status' => 'draft',
+			)
+		);
+		// Ensure the old URL is not pinged again.
+		$this->assertNotPing( home_url( '/2025/test-post-publish/' ), 'Old post URL should not be pinged again after second status change.' );
+	}
+
+	/**
+	 * Ensure previously deindexed URLs that now redirect are re-pinged.
+	 */
+	public function test_republished_post_with_slug_change_pings_old_urls() {
+		$post_id = self::$post_ids['publish'];
+
+		// Set the post to draft.
+		wp_update_post(
+			array(
+				'ID'          => $post_id,
+				'post_status' => 'draft',
+			)
+		);
+
+		// Ensure the old post URL is pinged.
+		$this->assertPing( home_url( '/2025/test-post-publish/' ), 'Old post URL should be pinged after unpublishing.' );
+
+		// Clear the ping list.
+		$this->pings = array();
+
+		// Update the post slug and re-publish all in one update.
+		wp_update_post(
+			array(
+				'ID'          => $post_id,
+				'post_name'   => 'final-test-post-publish',
+				'post_status' => 'publish',
+			)
+		);
+
+		// Ensure both URLs are pinged as the old URL is now a redirect.
+		$this->assertPing( home_url( '/2025/test-post-publish/' ), 'Old post URL should be pinged after slug and status update to index the redirect.' );
+		$this->assertPing( home_url( '/2025/final-test-post-publish/' ), 'New post URL should be pinged after slug and status update.' );
+	}
+
+	/**
+	 * Ensure updating the pinged URLs lists appends the new URLs correctly.
+	 */
+	public function test_update_post_ping_urls_appends_correctly() {
+		$post_id = self::$post_ids['publish'];
+
+		// Update the post slug for the first time.
+		wp_update_post(
+			array(
+				'ID'        => $post_id,
+				'post_name' => 'first-update-test-post-publish',
+			)
+		);
+
+		$last_ping_url = SimpleSearchSubmission\get_last_post_ping_url( $post_id );
+		$this->assertSame( home_url( '/2025/first-update-test-post-publish/' ), $last_ping_url, 'Last ping URL should be the first updated URL.' );
+
+		// Update the post slug for the second time.
+		wp_update_post(
+			array(
+				'ID'        => $post_id,
+				'post_name' => 'second-update-test-post-publish',
+			)
+		);
+
+		$last_ping_url = SimpleSearchSubmission\get_last_post_ping_url( $post_id );
+		$this->assertSame( home_url( '/2025/second-update-test-post-publish/' ), $last_ping_url, 'Last ping URL should be the second updated URL.' );
+
+		// Restore the first updated URL.
+		wp_update_post(
+			array(
+				'ID'        => $post_id,
+				'post_name' => 'first-update-test-post-publish',
+			)
+		);
+
+		$last_ping_url = SimpleSearchSubmission\get_last_post_ping_url( $post_id );
+		$this->assertSame( home_url( '/2025/first-update-test-post-publish/' ), $last_ping_url, 'Last ping URL should be the restored first updated URL.' );
+	}
+
+	/**
+	 * Ensure URL list never contains duplicates.
+	 */
+	public function test_update_post_ping_urls_no_duplicates() {
+		$post_id = self::$post_ids['publish'];
+
+		// Update the ping list (no need to actually ping).
+		SimpleSearchSubmission\add_post_ping_urls( $post_id, array( home_url( '/2025/test-post-publish/' ) ) );
+		SimpleSearchSubmission\add_post_ping_urls( $post_id, array( home_url( '/2025/test-post-publish-two/' ) ) );
+		SimpleSearchSubmission\add_post_ping_urls( $post_id, array( home_url( '/2025/test-post-publish-two/' ) ) );
+		SimpleSearchSubmission\add_post_ping_urls( $post_id, array( home_url( '/2025/test-post-publish/' ) ) );
+
+		// Ensure there are no duplicates.
+		$ping_urls = SimpleSearchSubmission\get_post_ping_urls( $post_id );
+		$this->assertCount( 2, $ping_urls, 'Ping URL list should not contain both URLs.' );
+
+		$expected = array(
+			home_url( '/2025/test-post-publish-two/' ),
+			home_url( '/2025/test-post-publish/' ),
+		);
+		$this->assertSame( $expected, $ping_urls, 'Ping URL list should not contain duplicates.' );
 	}
 }

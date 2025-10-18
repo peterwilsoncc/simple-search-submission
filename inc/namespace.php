@@ -254,6 +254,24 @@ function get_post_ping_urls( $post ) {
 }
 
 /**
+ * Get the last URL pinged for the post.
+ *
+ * This returns the most recently pinged URL from the post meta
+ * for sending a deindexing request to IndexNow.
+ *
+ * @param \WP_Post|int $post The post ID or object.
+ * @return string|null The last URL pinged, or null if none found.
+ */
+function get_last_post_ping_url( $post ) {
+	$urls = get_post_ping_urls( $post );
+	if ( empty( $urls ) || ! is_array( $urls ) ) {
+		return null;
+	}
+
+	return array_pop( $urls );
+}
+
+/**
  * Add a URL or URLs to the post's ping URLs.
  *
  * This function allows you to add additional URLs to the list of URLs
@@ -269,15 +287,18 @@ function add_post_ping_urls( $post, $urls ) {
 		return;
 	}
 
-	$ping_urls     = get_post_ping_urls( $post );
+	$ping_urls     = array_values( get_post_ping_urls( $post ) );
 	$old_ping_urls = $ping_urls;
 	$urls          = (array) $urls;
-	$ping_urls     = array_merge( $ping_urls, $urls );
-	$ping_urls     = array_unique( $ping_urls );
-	sort( $ping_urls );
+
+	// Remove new $urls from $ping_urls to prevent duplicates.
+	$ping_urls = array_diff( $ping_urls, $urls );
+
+	// Append new URLs.
+	$ping_urls = array_merge( array_values( $ping_urls ), array_values( $urls ) );
 
 	// If the URLs haven't changed, do nothing.
-	if ( empty( array_diff( $ping_urls, $old_ping_urls ) ) ) {
+	if ( $old_ping_urls === $ping_urls ) {
 		return;
 	}
 
@@ -296,7 +317,11 @@ function ping_indexnow( $post ) {
 		return;
 	}
 
-	$url_list    = get_post_ping_urls( $post );
+	$previous_url = get_last_post_ping_url( $post );
+	$url_list     = array();
+	if ( $previous_url ) {
+		$url_list[] = $previous_url;
+	}
 	$current_url = get_permalink( $post );
 
 	/*
