@@ -18,4 +18,4 @@ jobs:
       uses: wordpress/plugin-check-action@v1
       with:
         exclude-directories: ".github,bin,tests"
-        exclude-files: ".editorconfig,.gitattributes,.gitignore,.wordpress-version-checker.json,phpcs.xml.dist,phpunit.xml.dist,readme.md"
+        exclude-files: ".editorconfig,.gitattributes,.gitignore,.wordpress-version-checker.json,phpcs.xml.dist,phpunit.xml.dist,readme.md,.wp-env.json"

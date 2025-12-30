@@ -9,6 +9,10 @@ namespace PWCC\SimpleSearchSubmission;
 
 const PLUGIN_VERSION = '1.2.0';
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 /**
  * Bootstrap the plugin.
  *

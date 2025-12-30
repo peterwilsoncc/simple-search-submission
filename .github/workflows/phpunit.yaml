@@ -22,8 +22,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        wp-versions: [ '6.3', '6.4', '6.5', '6.6', '6.7', '6.8', 'latest', 'trunk' ]
-        php-versions: ['7.4', '8.0', '8.1', '8.2', '8.3', '8.4' ]
+        wp-versions: [ '6.3', '6.4', '6.5', '6.6', '6.7', '6.8', '6.9', 'trunk' ]
+        php-versions: ['7.4', '8.0', '8.1', '8.2', '8.3', '8.4', '8.5' ]
         exclude:
           - wp-versions: '6.3'
             php-versions: '8.3'
@@ -35,6 +35,18 @@ jobs:
             php-versions: '8.4'
           - wp-versions: '6.6'
             php-versions: '8.4'
+          - wp-versions: '6.3'
+            php-versions: '8.5'
+          - wp-versions: '6.4'
+            php-versions: '8.5'
+          - wp-versions: '6.5'
+            php-versions: '8.5'
+          - wp-versions: '6.6'
+            php-versions: '8.5'
+          - wp-versions: '6.7'
+            php-versions: '8.5'
+          - wp-versions: '6.8'
+            php-versions: '8.5'
     name: WP ${{ matrix.wp-versions }} / PHP ${{ matrix.php-versions }}
 
     steps:
