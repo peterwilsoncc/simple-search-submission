@@ -10,6 +10,7 @@ namespace PWCC\SimpleSearchSubmission\Tests;
 use PWCC\SimpleSearchSubmission\SEOCompat;
 use WP_UnitTestCase;
 use WP_UnitTest_Factory;
+use WP_Mock;
 
 /**
  * Test SEO Compatibility features.
@@ -67,6 +68,14 @@ class Test_SEO_Compat extends WP_UnitTestCase {
 	 */
 	public function test_is_noindex_no_seo_plugins( $post_status ) {
 		$this->assertFalse( SEOCompat\is_noindex( self::$post_ids[ $post_status ] ), 'Post is expected to be indexable when no SEO plugin is available.' );
+	}
+
+	/**
+	 * Test with Yoast SEO Mocked to index a post.
+	 *
+	 * @todo Mock both YoastSEO and that the function exists.
+	 */
+	public function test_is_noindex_yoastseo() {
 	}
 
 	/**
