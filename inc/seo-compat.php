@@ -7,6 +7,10 @@
 
 namespace PWCC\SimpleSearchSubmission\SEOCompat;
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 /**
  * Determine if a post is set to noindex by an SEO plugin.
  *
