@@ -37,3 +37,4 @@ tests_add_filter( 'muplugins_loaded', '_simple_search_submission_tests_manually_
 
 // Start up the WP testing environment.
 require "{$_simple_search_submission_tests_directory}/includes/bootstrap.php";
+require_once __DIR__ . '/class-base-test-case.php';

@@ -15,7 +15,7 @@ use WP_Mock;
 /**
  * Test SEO Compatibility features.
  */
-class Test_SEO_Compat extends WP_UnitTestCase {
+class Test_SEO_Compat extends Base_Test_Case {
 
 	/**
 	 * Array to store post IDs created for testing.
