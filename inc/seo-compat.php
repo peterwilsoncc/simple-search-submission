@@ -23,6 +23,23 @@ function is_noindex( $post ) {
 		return true; // No post found, treat as noindex.
 	}
 
+	/**
+	 * Filter to preflight the post's No Index status.
+	 *
+	 * This allow for developers to provide custom logic to determine whether
+	 * a post should be considered noindex or not. This filter can be used by
+	 * developers of SEO plugins that are not directly supported by this function.
+	 *
+	 * @param bool|null $preflight_noindex The preflight noindex decision.
+	 *                                     Default is `null`, meaning use the default logic.
+	 * @param \WP_Post  $post              The post object.
+	 */
+	$preflight_noindex = apply_filters( 'simple_search_submission_pre_is_noindex', null, $post );
+
+	if ( null !== $preflight_noindex ) {
+		return (bool) $preflight_noindex;
+	}
+
 	/*
 	 * Check in order of number of active installs.
 	 *
