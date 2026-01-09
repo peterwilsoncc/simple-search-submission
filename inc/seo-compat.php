@@ -69,12 +69,34 @@ function is_noindex( $post ) {
  * @return bool True if Yoast SEO sets the post to noindex, false otherwise.
  */
 function is_yoast_noindex( $post ) {
-	if ( ! function_exists( 'YoastSEO' ) ) {
+	if (
+		! function_exists( 'YoastSEO' )
+		|| ! is_a( YoastSEO(), 'Yoast\\WP\\SEO\\Main' )
+	) {
 		return false; // Yoast SEO is not active.
+	}
+
+	if (
+		! isset( YoastSEO()->meta )
+		|| ! is_a( YoastSEO()->meta, 'Yoast\\WP\\SEO\\Surfaces\\Meta_Surface' )
+	) {
+		return false; // Yoast SEO meta class not available.
+	}
+
+	if ( ! method_exists( YoastSEO()->meta, 'for_post' ) ) {
+		return false; // Yoast SEO meta method not available.
 	}
 
 	$post    = get_post( $post );
 	$post_id = $post->ID;
+	$yoast_for_post = YoastSEO()->meta->for_post( $post_id );
+
+	if (
+		! is_a( $yoast_for_post, 'Yoast\\WP\\SEO\\Surfaces\\Values\\Meta' )
+		|| ! isset( $yoast_for_post->robots )
+	) {
+		return false; // Yoast SEO post meta not available.
+	}
 
 	$robots = YoastSEO()->meta->for_post( $post_id )->robots;
 
