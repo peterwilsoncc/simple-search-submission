@@ -114,8 +114,43 @@ function is_yoast_noindex( $post ) {
  * @return bool True if AIOSEO sets the post to noindex, false otherwise.
  */
 function is_aioseo_noindex( $post ) {
-	if ( ! function_exists( 'aioseo' ) ) {
+	if (
+		! function_exists( 'aioseo' )
+		|| ! is_a( aioseo(), 'AIOSEO\\Plugin\\AIOSEO' )
+	) {
 		return false; // AIOSEO is not active.
+	}
+
+	if (
+		! isset( aioseo()->meta )
+		|| ! is_a( aioseo()->meta, 'AIOSEO\\Plugin\\Common\\Meta\\Meta' )
+	) {
+		return false; // AIOSEO meta class not available.
+	}
+
+	if (
+		! isset( aioseo()->meta->metaData )
+		|| ! is_a( aioseo()->meta->metaData, 'AIOSEO\\Plugin\\Common\\Meta\\MetaData' )
+	) {
+		return false; // AIOSEO metaData class not available.
+	}
+
+	if ( ! method_exists( aioseo()->meta->metaData, 'getMetaData' ) ) {
+		return false; // AIOSEO getMetaData method not available.
+	}
+
+	if (
+		! isset( aioseo()->helpers )
+		|| (
+			! is_a( aioseo()->helpers, 'AIOSEO\\Plugin\\Lite\\Utils\\Helpers' )
+			&& ! is_a( aioseo()->helpers, 'AIOSEO\\Plugin\\Pro\\Utils\\Helpers' )
+		)
+	) {
+		return false; // AIOSEO helpers class not available.
+	}
+
+	if ( ! method_exists( aioseo()->helpers, 'isPostTypeNoindexed' ) ) {
+		return false; // AIOSEO isPostTypeNoindexed method not available.
 	}
 
 	$post    = get_post( $post );
