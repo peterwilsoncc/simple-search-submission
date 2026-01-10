@@ -8,9 +8,7 @@
 namespace PWCC\SimpleSearchSubmission\Tests;
 
 use PWCC\SimpleSearchSubmission\SEOCompat;
-use WP_UnitTestCase;
 use WP_UnitTest_Factory;
-use WP_Mock;
 
 /**
  * Test SEO Compatibility features.
@@ -53,6 +51,35 @@ class Test_SEO_Compat extends Base_Test_Case {
 			);
 			self::$post_ids[ $status ] = $post_id;
 		}
+
+		self::mock_no_index();
+		foreach ( $statuses as $status ) {
+			$post_id                   = $factory->post->create(
+				array(
+					'post_status' => $status,
+					'post_title'  => 'Test No Indexed Post ' . ucfirst( $status ),
+					'post_name'   => 'test-no-indexed-post-' . $status,
+					'post_date'   => '2025-06-01 12:00:00', // Set date for predictable URLs.
+				)
+			);
+			self::$post_ids[ "noindex-{$status}" ] = $post_id;
+		}
+	}
+
+	/**
+	 * Set up each test.
+	 */
+	public function set_up() {
+		parent::set_up();
+		// Remove any mock filters.
+		remove_all_filters( 'simple_search_submission_pre_is_noindex' );
+	}
+
+	/**
+	 * Create filter to mock a no index response.
+	 */
+	public static function mock_no_index() {
+		add_filter( 'simple_search_submission_pre_is_noindex', '__return_true' );
 	}
 
 	/**
@@ -71,11 +98,75 @@ class Test_SEO_Compat extends Base_Test_Case {
 	}
 
 	/**
-	 * Test with Yoast SEO Mocked to index a post.
-	 *
-	 * @todo Mock both YoastSEO and that the function exists.
+	 * Test no indexed post does not send index request.
 	 */
-	public function test_is_noindex_yoastseo() {
+	/**
+	 * Ensure a new post triggers a ping to IndexNow.
+	 */
+	public function test_no_ping_on_noindex_publish() {
+		$this->mock_no_index();
+
+		$this->factory->post->create(
+			array(
+				'post_status' => 'publish',
+				'post_title'  => 'Test Post',
+				'post_name'   => 'no-ping-on-post-publish',
+				'post_date'   => '2025-06-01 12:00:00', // Set date for predictable URLs.
+			)
+		);
+
+		$this->assertNotPing( home_url( '/2025/no-ping-on-post-publish/' ), 'Noindexed posts should not be pinged on publish.' );
+	}
+
+	/**
+	 * Test changing a noindexed post to indexed triggers a ping.
+	 */
+	public function test_ping_on_no_indexed_to_indexed() {
+		$post_id = self::$post_ids['noindex-publish'];
+
+		// Update post to publish status without noindex (ie, not mocked in this test).
+		wp_update_post(
+			array(
+				'ID'          => $post_id,
+				'post_content' => 'Updated content',
+			)
+		);
+
+		$this->assertPing( home_url( '/2025/test-no-indexed-post-publish/' ), 'Post changing from noindex to indexable should trigger a ping.' );
+	}
+
+	/**
+	 * Test updating a noindexed post does not trigger a ping.
+	 */
+	public function test_no_ping_on_updated_noindexed_post() {
+		$this->mock_no_index();
+		$post_id = self::$post_ids['noindex-publish'];
+
+		wp_update_post(
+			array(
+				'ID'          => $post_id,
+				'post_content' => 'Updated content',
+			)
+		);
+
+		$this->assertNotPing( home_url( '/2025/test-no-indexed-post-publish/' ), 'Updating a noindexed post should not trigger a ping.' );
+	}
+
+	/**
+	 * Test updating an indexed post to noindexed triggers a ping.
+	 */
+	public function test_ping_on_updated_indexed_to_noindexed_post() {
+		$this->mock_no_index();
+		$post_id = self::$post_ids['publish'];
+
+		wp_update_post(
+			array(
+				'ID'          => $post_id,
+				'post_content' => 'Updated content',
+			)
+		);
+
+		$this->assertPing( home_url( '/2025/test-post-publish/' ), 'Updating a post that is now noindexed should not trigger a ping.' );
 	}
 
 	/**
