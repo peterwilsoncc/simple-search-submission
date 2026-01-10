@@ -460,7 +460,8 @@ function async_ping_indexnow( $post ) {
 	/**
 	 * Filter the delay (in seconds) before the asynchronous ping runs.
 	 *
-	 * @param int $delay The delay in seconds. Default is 10 seconds.
+	 * @param int     $delay The delay in seconds. Default is 10 seconds.
+	 * @param \WP_Post $post The post object being scheduled for an asynchronous ping.
 	 */
 	$delay = apply_filters( 'simple_search_submission_async_wait', 10, $post );
 

@@ -98,9 +98,7 @@ class Test_SEO_Compat extends Base_Test_Case {
 	}
 
 	/**
-	 * Test no indexed post does not send index request.
-	 */
-	/**
+
 	 * Ensure a new post triggers a ping to IndexNow.
 	 */
 	public function test_no_ping_on_noindex_publish() {
@@ -166,7 +164,7 @@ class Test_SEO_Compat extends Base_Test_Case {
 			)
 		);
 
-		$this->assertPing( home_url( '/2025/test-post-publish/' ), 'Updating a post that is now noindexed should not trigger a ping.' );
+		$this->assertPing( home_url( '/2025/test-post-publish/' ), 'Updating a post that is now noindexed should trigger a ping.' );
 	}
 
 	/**
