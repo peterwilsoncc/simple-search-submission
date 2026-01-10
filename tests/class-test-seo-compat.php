@@ -99,7 +99,6 @@ class Test_SEO_Compat extends Base_Test_Case {
 	}
 
 	/**
-
 	 * Ensure a new post triggers a ping to IndexNow.
 	 */
 	public function test_no_ping_on_noindex_publish() {
