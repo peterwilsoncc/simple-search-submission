@@ -170,6 +170,23 @@ class Test_SEO_Compat extends Base_Test_Case {
 	}
 
 	/**
+	 * Test updating a private post to a noindexed public post does not trigger a ping.
+	 */
+	public function test_no_ping_on_private_to_noindexed_public_post() {
+		$this->mock_no_index();
+		$post_id = self::$post_ids['private'];
+
+		wp_update_post(
+			array(
+				'ID'           => $post_id,
+				'post_content' => 'Updated content',
+				'post_status'  => 'publish',
+			)
+		);
+		$this->assertNotPing( home_url( '/2025/test-post-private/' ), 'Updating a private post to noindexed public post should not trigger a ping.' );
+	}
+
+	/**
 	 * Data provider for test_is_noindex_no_seo_plugins.
 	 *
 	 * @return array
