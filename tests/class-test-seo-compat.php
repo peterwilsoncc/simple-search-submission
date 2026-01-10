@@ -12,6 +12,8 @@ use WP_UnitTest_Factory;
 
 /**
  * Test SEO Compatibility features.
+ *
+ * @covers SEOCompat\is_noindex
  */
 class Test_SEO_Compat extends Base_Test_Case {
 
@@ -85,7 +87,6 @@ class Test_SEO_Compat extends Base_Test_Case {
 	/**
 	 * Test is_noindex function with no SEO plugins active.
 	 *
-	 * @covers SEOCompat\is_noindex
 	 * @covers SEOCompat\is_yoast_noindex
 	 * @covers SEOCompat\is_aioseo_noindex
 	 *
