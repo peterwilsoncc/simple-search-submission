@@ -54,7 +54,7 @@ class Test_SEO_Compat extends Base_Test_Case {
 
 		self::mock_no_index();
 		foreach ( $statuses as $status ) {
-			$post_id                   = $factory->post->create(
+			$post_id                               = $factory->post->create(
 				array(
 					'post_status' => $status,
 					'post_title'  => 'Test No Indexed Post ' . ucfirst( $status ),
@@ -127,7 +127,7 @@ class Test_SEO_Compat extends Base_Test_Case {
 		// Update post to publish status without noindex (ie, not mocked in this test).
 		wp_update_post(
 			array(
-				'ID'          => $post_id,
+				'ID'           => $post_id,
 				'post_content' => 'Updated content',
 			)
 		);
@@ -144,7 +144,7 @@ class Test_SEO_Compat extends Base_Test_Case {
 
 		wp_update_post(
 			array(
-				'ID'          => $post_id,
+				'ID'           => $post_id,
 				'post_content' => 'Updated content',
 			)
 		);
@@ -161,7 +161,7 @@ class Test_SEO_Compat extends Base_Test_Case {
 
 		wp_update_post(
 			array(
-				'ID'          => $post_id,
+				'ID'           => $post_id,
 				'post_content' => 'Updated content',
 			)
 		);
