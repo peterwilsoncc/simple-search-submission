@@ -87,8 +87,8 @@ function is_yoast_noindex( $post ) {
 		return false; // Yoast SEO meta method not available.
 	}
 
-	$post    = get_post( $post );
-	$post_id = $post->ID;
+	$post           = get_post( $post );
+	$post_id        = $post->ID;
 	$yoast_for_post = YoastSEO()->meta->for_post( $post_id );
 
 	if (
