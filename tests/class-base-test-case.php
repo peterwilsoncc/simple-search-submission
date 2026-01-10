@@ -1,4 +1,9 @@
 <?php
+/**
+ * Base tests Case class for Simple Search Submission tests.
+ *
+ * @package SimpleSearchSubmission
+ */
 
 namespace PWCC\SimpleSearchSubmission\Tests;
 
