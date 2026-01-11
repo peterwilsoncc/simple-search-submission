@@ -198,16 +198,17 @@ class Test_SEO_Compat extends Base_Test_Case {
 		add_action( 'simple_search_submission_ping', $mock_legacy_meta_change, 5 );
 
 		$this->mock_no_index();
-		$post_id = self::$post_ids['noindex-publish'];
+		$post_id = self::$post_ids['noindex-draft'];
 
 		wp_update_post(
 			array(
 				'ID'           => $post_id,
 				'post_content' => 'Updated content',
+				'post_status'  => 'publish',
 			)
 		);
 
-		$this->assertPing( home_url( '/2025/test-no-indexed-post-publish/' ), 'Asynchronous ping should occur for updated indexed post.' );
+		$this->assertPing( home_url( '/2025/test-no-indexed-post-draft/' ), 'Ping should occur when noindex status is removed after the maybe ping check has run.' );
 	}
 
 	/**
@@ -225,7 +226,7 @@ class Test_SEO_Compat extends Base_Test_Case {
 		$post_id = self::$post_ids['draft'];
 		wp_publish_post( $post_id );
 
-		$this->assertNotPing( home_url( '/2025/test-post-draft/' ), 'Asynchronous ping should occur for updated indexed post.' );
+		$this->assertNotPing( home_url( '/2025/test-post-draft/' ), 'Ping should not occur when noindex status is added after the maybe ping check has run.' );
 	}
 
 	/**
