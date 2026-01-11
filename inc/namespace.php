@@ -152,6 +152,12 @@ function get_indexnow_key(): string {
  *
  * Runs on the `transition_post_status` action.
  *
+ * As both Yoast SEO and AIOSEO use the legacy meta box for updating the
+ * noindexed status of a post, the status is not checked here but during
+ * the actual ping.
+ *
+ * @todo Check noindex status here once both SEO plugins have native Gutenberg support.
+ *
  * @param string   $new_status New post status.
  * @param string   $old_status Old post status.
  * @param \WP_Post $post       Post object.
@@ -163,6 +169,10 @@ function maybe_ping_indexnow( $new_status, $old_status, $post ): void {
 	 * This allow for developers to provide custom logic to determine whether
 	 * to ping IndexNow. Return `true` to ping, `false` to skip ping, or
 	 * `null` to use the default logic.
+	 *
+	 * As both Yoast SEO and AIOSEO use the legacy meta box for updating the
+	 * noindexed status of a post, it's recommended not to use the noindex status
+	 * as a determining factor for a ping.
 	 *
 	 * @param bool|null $preflight_ping The preflight ping decision.
 	 *                                  Default is `null`, meaning use the default logic.
@@ -212,16 +222,6 @@ function maybe_ping_indexnow( $new_status, $old_status, $post ): void {
 		! is_post_status_viewable( $new_status )
 		&& ! is_post_status_viewable( $old_status )
 	) {
-		return;
-	}
-
-	/*
-	 * Skip for noindexed posts that have never pinged IndexNow.
-	 *
-	 * Previously pinged URLs are still pinged to encourage removal from
-	 * search engines.
-	 */
-	if ( SEOCompat\is_noindex( $post ) && empty( get_post_ping_urls( $post ) ) ) {
 		return;
 	}
 
