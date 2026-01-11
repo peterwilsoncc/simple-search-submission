@@ -185,6 +185,50 @@ class Test_SEO_Compat extends Base_Test_Case {
 	}
 
 	/**
+	 * Emulate removing the noindex status after the maybe ping check has run.
+	 *
+	 * This is to test the case where the noindex status is changed via the legacy meta box.
+	 */
+	public function test_ping_when_noindex_removed_after_maybe_ping_runs() {
+		$mock_legacy_meta_change = function () {
+			// Unmock the noindex check to allow the ping to proceed.
+			remove_all_filters( 'simple_search_submission_pre_is_noindex' );
+		};
+
+		add_action( 'simple_search_submission_ping', $mock_legacy_meta_change, 5 );
+
+		$this->mock_no_index();
+		$post_id = self::$post_ids['noindex-publish'];
+
+		wp_update_post(
+			array(
+				'ID'           => $post_id,
+				'post_content' => 'Updated content',
+			)
+		);
+
+		$this->assertPing( home_url( '/2025/test-no-indexed-post-publish/' ), 'Asynchronous ping should occur for updated indexed post.' );
+	}
+
+	/**
+	 * Emulate adding the noindex status after the maybe ping check has run.
+	 *
+	 * This is to test the case where the noindex status is changed via the legacy meta box.
+	 */
+	public function test_ping_when_noindex_added_after_maybe_ping_runs() {
+		$mock_legacy_meta_change = function () {
+			$this->mock_no_index();
+		};
+
+		add_action( 'simple_search_submission_ping', $mock_legacy_meta_change, 5 );
+
+		$post_id = self::$post_ids['draft'];
+		wp_publish_post( $post_id );
+
+		$this->assertNotPing( home_url( '/2025/test-post-draft/' ), 'Asynchronous ping should occur for updated indexed post.' );
+	}
+
+	/**
 	 * Data provider for test_is_noindex_no_seo_plugins.
 	 *
 	 * @return array
