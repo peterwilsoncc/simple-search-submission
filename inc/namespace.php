@@ -7,7 +7,7 @@
 
 namespace PWCC\SimpleSearchSubmission;
 
-const PLUGIN_VERSION = '1.2.0';
+const PLUGIN_VERSION = '1.3.0';
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;

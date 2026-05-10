@@ -91,6 +91,12 @@ As mentioned above, notifications are not sent for non-production sites.
 
 ## Changelog
 
+### 1.3.0
+
+* Fix: Prevent PHP file direct access.
+* Developer: Add PHP 8.5 to PHPUnit test suite.
+* Developer: Add WordPress Plugin Check workflow.
+
 ### 1.2.0
 
 * Only submit de-indexed and redirect URLs to IndexNow once.
