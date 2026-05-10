@@ -2,7 +2,7 @@
 Contributors: peterwilsoncc
 Tags: seo, indexnow, crawling
 Tested up to: 7.0
-Stable tag: 1.2.0
+Stable tag: 1.3.0
 License: GPL-2.0-or-later
 License URI: https://github.com/peterwilsoncc/simple-search-submission/blob/main/LICENSE
 
@@ -81,6 +81,12 @@ As an SEO feature, the expectation for installing this plugin that you want sear
 As mentioned above, notifications are not sent for non-production sites.
 
 == Changelog ==
+
+= 1.3.0 =
+
+* Fix: Prevent PHP file direct access.
+* Developer: Add PHP 8.5 to PHPUnit test suite.
+* Developer: Add WordPress Plugin Check workflow.
 
 = 1.2.0 =
 
