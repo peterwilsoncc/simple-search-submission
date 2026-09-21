@@ -28,6 +28,14 @@ The biggest features of this plugin are the features that it's missing:
 
 Simple Search Submission for IndexNow submits the update requests as you save your content. If you wish to submit the URLs asynchronously via a cron job, you can include the code `add_filter( 'simple_search_submission_notify_async', '__return_true' );` in your theme or or plugin.
 
+### SEO Plugin Compatibility: No Indexed posts
+
+Simple Search Submission for IndexNow includes support to detect NoIndexed posts for both Yoast SEO and AIOSEO. Additional plugins can provide support for this plugin via the `simple_search_submission_pre_is_noindex` filter.
+
+The plugin attempts to detect posts set to noindex by an SEO plugin and bypass submitting newly published content with a noindex directive. As both Yoast SEO and AIOSEO use legacy meta boxes for updating their settings, there is a risk these URLs will be pinged regardless due to a race condition.
+
+The race condition can be avoided by setting the plugin to ping IndexNow asynchronously.
+
 ## Installation
 
 Simple Search Submission for IndexNow can be installed via the following methods
