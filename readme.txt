@@ -1,7 +1,7 @@
 === Simple Search Submission for IndexNow ===
 Contributors: peterwilsoncc
 Tags: seo, indexnow, crawling
-Tested up to: 7.1
+Tested up to: 7.2
 Stable tag: 1.3.0
 License: GPL-2.0-or-later
 License URI: https://github.com/peterwilsoncc/simple-search-submission/blob/main/LICENSE
